@@ -1,0 +1,23 @@
+name: Build and Publish Container
+
+on: [push, workflow_dispatch]
+
+# Permissions required for automatic semantic version tagging
+permissions:
+    contents: write
+
+jobs:
+  build:
+    # Available runners: https://github.com/actions/runner-images
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Build and publish container
+        uses: spritely/build/container@v0.22.0
+        with:
+          registryUsername: ${{ secrets.DOCKER_HUB_USERNAME }}
+          registryPassword: ${{ secrets.DOCKER_HUB_TOKEN }}
+          registryHost: docker.io
+          imageNames: spritelydev/dotnet10-devcontainer
+          context: ./src
+          dockerfile: ./src/Dockerfile
