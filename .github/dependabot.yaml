@@ -12,13 +12,15 @@ updates:
       all-docker:
         patterns:
           - "*"
-  - package-ecosystem: github-actions
-    directories:
-      - /
-      - "**/*"
-    schedule:
-      interval: daily
-    groups:
-      all-github-actions:
-        patterns:
-          - "*"
+  # spritely/build/container uses other spritely actions, some of which use the container produced by this repo as a devcontainer
+  # Therefore enabling the code below would create a circular dependency, so build version updates are manual in this repo
+  # - package-ecosystem: github-actions
+  #   directories:
+  #     - /
+  #     - "**/*"
+  #   schedule:
+  #     interval: daily
+  #   groups:
+  #     all-github-actions:
+  #       patterns:
+  #         - "*"
