@@ -13,11 +13,17 @@
 # - Choose latest long-term-support (LTS) version of Ubuntu from #3
 # - Select the latest dotnet version from #4 that exists in #1
 
+# Stage with Python installed (official image)
+FROM python:3.14-slim AS py
+
 FROM mcr.microsoft.com/dotnet/sdk:10.0.102-noble-amd64
 
 # Clear this environment variable so xml docs from NuGet packages are unpackaged. The default dotnet/sdk image sets it to 'skip'.
 # See https://github.com/dotnet/dotnet-docker/issues/2790
 ENV NUGET_XMLDOC_MODE=
+
+# Copy Python runtime + stdlib from official Python image
+COPY --from=py /usr/local/ /usr/local/
 
 RUN apt-get update && apt-get install -y \
     # Install common dependencies
@@ -35,6 +41,16 @@ RUN apt-get update && apt-get install -y \
     tree \
     wget \
     zsh \
+    # Minimal runtime deps Python expects on Debian-based images
+    libssl3 \
+    zlib1g \
+    libbz2-1.0 \
+    libreadline8 \
+    libsqlite3-0 \
+    libncursesw6 \
+    libffi8 \
+    liblzma5 \
+    tk \
     # Make bat (installed as batcat) available as bat, see: https://github.com/sharkdp/bat
     && ln -s /usr/bin/batcat /usr/local/bin/bat \
     # Enable docker in docker
@@ -68,16 +84,6 @@ RUN apt-get update && apt-get install -y \
     # See: https://nodejs.org/en/about/previous-releases and https://nodejs.org/en/download/current
     && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get install -y nodejs \
-    # Install Python (latest stable)
-    # See: https://www.python.org/downloads/
-    && PYTHON_VER=3.14 \
-    && apt-get install -y python${PYTHON_VER} python${PYTHON_VER}-venv python3-pip \
-    && update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_VER} 1 \
-    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VER} 1 \
-    # Install UV (fast Python package installer)
-    # See: https://github.com/astral-sh/uv
-    && curl -LsSf https://astral.sh/uv/install.sh | sh \
-    && mv /root/.local/bin/uv /usr/local/bin/ \
     # Add Claude Code and OpenAI Codex CLIs
     && npm install -g @anthropic-ai/claude-code \
     && npm install -g @openai/codex \
@@ -94,6 +100,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /tmp/* \
     && rm -rf /var/lib/apt/lists/*
+
+# Verify Python installation
+RUN python3 --version && pip3 --version
+
+# Install uv (fast Python package installer)
+# See: https://github.com/astral-sh/uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ENV PULUMI_SKIP_UPDATE_CHECK=true
 
