@@ -68,6 +68,16 @@ RUN apt-get update && apt-get install -y \
     # See: https://nodejs.org/en/about/previous-releases and https://nodejs.org/en/download/current
     && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get install -y nodejs \
+    # Install Python (latest stable)
+    # See: https://www.python.org/downloads/
+    && PYTHON_VER=3.14 \
+    && apt-get install -y python${PYTHON_VER} python${PYTHON_VER}-venv python3-pip \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_VER} 1 \
+    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VER} 1 \
+    # Install UV (fast Python package installer)
+    # See: https://github.com/astral-sh/uv
+    && curl -LsSf https://astral.sh/uv/install.sh | sh \
+    && mv /root/.local/bin/uv /usr/local/bin/ \
     # Add Claude Code and OpenAI Codex CLIs
     && npm install -g @anthropic-ai/claude-code \
     && npm install -g @openai/codex \
