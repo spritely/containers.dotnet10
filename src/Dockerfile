@@ -108,6 +108,9 @@ RUN python3 --version && pip3 --version
 # See: https://github.com/astral-sh/uv
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
+# Add uv to PATH
+ENV PATH="/root/.local/bin:${PATH}"
+
 ENV PULUMI_SKIP_UPDATE_CHECK=true
 
 # Start docker in docker
