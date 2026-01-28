@@ -96,17 +96,13 @@ RUN apt-get update && apt-get install -y \
     && sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)" --unattended \
     # Set zsh as the default shell for the main (root) user
     && chsh -s /bin/zsh root \
+    # Install uv (fast Python package installer)
+    # See: https://github.com/astral-sh/uv
+    && curl -LsSf https://astral.sh/uv/install.sh | sh \
     # Clean up
     && apt-get clean \
     && rm -rf /tmp/* \
     && rm -rf /var/lib/apt/lists/*
-
-# Verify Python installation
-RUN python3 --version && pip3 --version
-
-# Install uv (fast Python package installer)
-# See: https://github.com/astral-sh/uv
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Add uv to PATH
 ENV PATH="/root/.local/bin:${PATH}"
