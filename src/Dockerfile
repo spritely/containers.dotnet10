@@ -16,7 +16,7 @@
 # Stage with Python installed (official image)
 FROM python:3.14-slim AS py
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0.102-noble-amd64
+FROM mcr.microsoft.com/dotnet/sdk:10.0.103-noble-amd64
 
 # Clear this environment variable so xml docs from NuGet packages are unpackaged. The default dotnet/sdk image sets it to 'skip'.
 # See https://github.com/dotnet/dotnet-docker/issues/2790
