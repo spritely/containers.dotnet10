@@ -20,7 +20,6 @@
                 "editorconfig.editorconfig",
                 "github.copilot",
                 "github.copilot-chat",
-                "google.geminicodeassist",
                 "humao.rest-client",
                 "jeppeandersen.vscode-kafka",
                 "mhutchie.git-graph",

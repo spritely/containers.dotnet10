@@ -87,7 +87,6 @@ RUN apt-get update && apt-get install -y \
     # Add Claude Code and OpenAI Codex CLIs
     && npm install -g @anthropic-ai/claude-code \
     && npm install -g @openai/codex \
-    && npm install -g @google/gemini-cli \
     # Grant built-in app user sudo permissions without password prompt
     && echo "app ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
     # Add app user to the docker group to enable docker usage without sudo
