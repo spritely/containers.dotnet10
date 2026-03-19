@@ -15,14 +15,16 @@
 
 # Base image versions
 # Python tags: https://hub.docker.com/_/python
+# renovate: datasource=docker depName=python
 ARG PYTHON_VERSION=3.14
 # .NET SDK tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
-ARG DOTNET_VERSION=10.0.102-noble-amd64
+# renovate: datasource=docker depName=mcr.microsoft.com/dotnet/sdk
+ARG DOTNET_VERSION=10.0.102
 
 # Stage with Python installed (official image)
 FROM python:${PYTHON_VERSION}-slim AS py
 
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION}
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION}-noble-amd64
 
 # Clear this environment variable so xml docs from NuGet packages are unpackaged. The default dotnet/sdk image sets it to 'skip'.
 # See https://github.com/dotnet/dotnet-docker/issues/2790
@@ -34,15 +36,19 @@ COPY --from=py /usr/local/ /usr/local/
 # Tool versions
 # Obtain the version number from: https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli
 # Only use the major, minor, and patch version numbers
+# renovate: datasource=github-tags depName=Azure/azure-cli extractVersion=^azure-cli-(?<version>.*)$
 ARG AZURE_CLI_VERSION=2.82.0
 # Pulumi releases: https://www.pulumi.com/docs/install/versions/
+# renovate: datasource=github-releases depName=pulumi/pulumi extractVersion=^v(?<version>.*)$
 ARG PULUMI_VERSION=3.217.1
-# curl -L -s https://dl.k8s.io/release/stable.txt
+# Obtain the version number from: https://dl.k8s.io/release/stable.txt
 # Version will be something like v1.32.2 but commands below require using the major and minor version only
 # kubectl releases: https://kubernetes.io/releases/
-ARG KUBECTL_MINOR_VERSION=v1.35
+# renovate: datasource=github-releases depName=kubernetes/kubernetes extractVersion=^v(?<version>\d+\.\d+)
+ARG KUBECTL_MINOR_VERSION=1.35
 # Codex releases: https://github.com/openai/codex/releases
-ARG CODEX_VERSION=v0.115.0
+# renovate: datasource=github-releases depName=openai/codex extractVersion=^v(?<version>.*)$
+ARG CODEX_VERSION=0.115.0
 
 RUN apt-get update && apt-get install -y \
     # Python runtime dependencies (required by copied Python installation)
@@ -91,15 +97,15 @@ RUN apt-get update && apt-get install -y \
     && mv /root/.pulumi/bin/* /usr/local/bin/ \
     # Install kubectl CLI, see: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
-    && curl -fsSL https://pkgs.k8s.io/core:/stable:/${KUBECTL_MINOR_VERSION}/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg \
+    && curl -fsSL https://pkgs.k8s.io/core:/stable:/v${KUBECTL_MINOR_VERSION}/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg \
     && chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${KUBECTL_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list \
+    && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v${KUBECTL_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list \
     && chmod 644 /etc/apt/sources.list.d/kubernetes.list \
     && apt-get update && apt-get install -y kubectl jq yq \
     # Install Claude Code (native installer)
     && curl -fsSL https://claude.ai/install.sh | bash \
     # Install OpenAI Codex (native binary)
-    && wget https://github.com/openai/codex/releases/download/${CODEX_VERSION}/codex-linux -O /usr/local/bin/codex \
+    && wget https://github.com/openai/codex/releases/download/v${CODEX_VERSION}/codex-linux -O /usr/local/bin/codex \
     && chmod +x /usr/local/bin/codex \
     # Grant built-in app user sudo permissions without password prompt
     && echo "app ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
