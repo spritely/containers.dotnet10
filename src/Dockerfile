@@ -1,4 +1,4 @@
-# 1. List of all available tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
+﻿# 1. List of all available tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
 # 2. Details about selecting a container image: https://github.com/dotnet/dotnet-docker/blob/main/README.sdk.md
 # 3. Ubuntu releases: https://www.releases.ubuntu.com/
 # 4. Information on dotnet versions: https://dotnet.microsoft.com/en-us/download/dotnet
@@ -80,13 +80,12 @@ RUN apt-get update && apt-get install -y \
     && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${KUBECTL_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list \
     && chmod 644 /etc/apt/sources.list.d/kubernetes.list \
     && apt-get update && apt-get install -y kubectl jq yq \
-    # Add latest Active LTS node.js version
-    # See: https://nodejs.org/en/about/previous-releases and https://nodejs.org/en/download/current
-    && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
-    && apt-get install -y nodejs \
-    # Add Claude Code and OpenAI Codex CLIs
-    && npm install -g @anthropic-ai/claude-code \
-    && npm install -g @openai/codex \
+    # Install Claude Code (native installer, auto-updates)
+    && curl -fsSL https://claude.ai/install.sh | bash \
+    # Install OpenAI Codex (native binary)
+    # To find latest version: https://github.com/openai/codex/releases
+    && wget https://github.com/openai/codex/releases/download/v0.115.0/codex-linux -O /usr/local/bin/codex \
+    && chmod +x /usr/local/bin/codex \
     # Grant built-in app user sudo permissions without password prompt
     && echo "app ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
     # Add app user to the docker group to enable docker usage without sudo
