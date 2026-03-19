@@ -1,4 +1,4 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+﻿// For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
 {
     "name": "{repo-name}",
@@ -18,13 +18,7 @@
                 "bierner.github-markdown-preview",
                 "davidanson.vscode-markdownlint",
                 "editorconfig.editorconfig",
-                "github.copilot",
-                "github.copilot-chat",
-                "google.geminicodeassist",
-                "humao.rest-client",
-                "jeppeandersen.vscode-kafka",
                 "mhutchie.git-graph",
-                "ms-azuretools.vscode-containers",
                 "ms-dotnettools.csdevkit",
                 "openai.chatgpt",
                 "ryanluker.vscode-coverage-gutters",

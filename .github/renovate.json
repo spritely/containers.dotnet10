@@ -1,0 +1,22 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices"],
+  "description": "Regular automation - excludes spritely/build (circular dependency)",
+  "packageRules": [
+    {
+      "description": "Exclude spritely/build - use manual workflow instead",
+      "matchPackageNames": ["spritely/build"],
+      "enabled": false
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update ARG versions in Dockerfile with renovate comments",
+      "fileMatch": ["(^|/)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?) depName=(?<depName>[^\\s]+?)(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?\\s+ARG [A-Z_]+?=(?<currentValue>.+?)\\s"
+      ]
+    }
+  ]
+}

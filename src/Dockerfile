@@ -1,4 +1,4 @@
-# 1. List of all available tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
+﻿# 1. List of all available tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
 # 2. Details about selecting a container image: https://github.com/dotnet/dotnet-docker/blob/main/README.sdk.md
 # 3. Ubuntu releases: https://www.releases.ubuntu.com/
 # 4. Information on dotnet versions: https://dotnet.microsoft.com/en-us/download/dotnet
@@ -13,10 +13,18 @@
 # - Choose latest long-term-support (LTS) version of Ubuntu from #3
 # - Select the latest dotnet version from #4 that exists in #1
 
-# Stage with Python installed (official image)
-FROM python:3.14-slim AS py
+# Base image versions
+# Python tags: https://hub.docker.com/_/python
+# renovate: datasource=docker depName=python
+ARG PYTHON_VERSION=3.14
+# .NET SDK tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
+# renovate: datasource=docker depName=mcr.microsoft.com/dotnet/sdk
+ARG DOTNET_VERSION=10.0.102
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0.102-noble-amd64
+# Stage with Python installed (official image)
+FROM python:${PYTHON_VERSION}-slim AS py
+
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION}-noble-amd64
 
 # Clear this environment variable so xml docs from NuGet packages are unpackaged. The default dotnet/sdk image sets it to 'skip'.
 # See https://github.com/dotnet/dotnet-docker/issues/2790
@@ -25,23 +33,25 @@ ENV NUGET_XMLDOC_MODE=
 # Copy Python runtime + stdlib from official Python image
 COPY --from=py /usr/local/ /usr/local/
 
+# Tool versions
+# Obtain the version number from: https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli
+# Only use the major, minor, and patch version numbers
+# renovate: datasource=github-tags depName=Azure/azure-cli extractVersion=^azure-cli-(?<version>.*)$
+ARG AZURE_CLI_VERSION=2.82.0
+# Pulumi releases: https://www.pulumi.com/docs/install/versions/
+# renovate: datasource=github-releases depName=pulumi/pulumi extractVersion=^v(?<version>.*)$
+ARG PULUMI_VERSION=3.217.1
+# Obtain the version number from: https://dl.k8s.io/release/stable.txt
+# Version will be something like v1.32.2 but commands below require using the major and minor version only
+# kubectl releases: https://kubernetes.io/releases/
+# renovate: datasource=github-releases depName=kubernetes/kubernetes extractVersion=^v(?<version>\d+\.\d+)
+ARG KUBECTL_MINOR_VERSION=1.35
+# Codex releases: https://github.com/openai/codex/releases
+# renovate: datasource=github-releases depName=openai/codex extractVersion=^rust-v(?<version>.*)$
+ARG CODEX_VERSION=0.115.0
+
 RUN apt-get update && apt-get install -y \
-    # Install common dependencies
-    apt-transport-https \
-    bat \
-    bats \
-    ca-certificates \
-    curl \
-    fuse-overlayfs \
-    git \
-    gnupg \
-    lsb-release \
-    openssh-client \
-    sudo \
-    tree \
-    wget \
-    zsh \
-    # Minimal runtime deps Python expects on Debian-based images
+    # Python runtime dependencies (required by copied Python installation)
     libssl3 \
     zlib1g \
     libbz2-1.0 \
@@ -51,6 +61,23 @@ RUN apt-get update && apt-get install -y \
     libffi8 \
     liblzma5 \
     tk \
+    # Build dependencies (required for package installations below)
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release \
+    wget \
+    # Docker-in-Docker support
+    fuse-overlayfs \
+    # Developer experience tools
+    bat \
+    bats \
+    git \
+    openssh-client \
+    sudo \
+    tree \
+    zsh \
     # Make bat (installed as batcat) available as bat, see: https://github.com/sharkdp/bat
     && ln -s /usr/bin/batcat /usr/local/bin/bat \
     # Enable docker in docker
@@ -61,33 +88,27 @@ RUN apt-get update && apt-get install -y \
     && curl -sLS https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/keyrings/microsoft.gpg > /dev/null \
     && chmod go+r /etc/apt/keyrings/microsoft.gpg \
     && AZ_DIST=$(lsb_release -cs) \
-    # Obtain the version number from: https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli
-    # Only use the major, minor, and patch version numbers
-    && AZ_VER=2.82.0 \
+    && AZ_VER=${AZURE_CLI_VERSION} \
     && echo "Types: deb\nURIs: https://packages.microsoft.com/repos/azure-cli/\nSuites: ${AZ_DIST}\nComponents: main\nArchitectures: $(dpkg --print-architecture)\nSigned-by: /etc/apt/keyrings/microsoft.gpg" | tee /etc/apt/sources.list.d/azure-cli.sources \
     && apt-get update && apt-get install -y azure-cli=${AZ_VER}-1~${AZ_DIST} \
     # Install Pulumi CLI, see: https://www.pulumi.com/docs/install/
-    # To find a new version check this page: https://www.pulumi.com/docs/install/versions/
-    && curl -fsSL https://get.pulumi.com | sh -s -- --version 3.217.1 \
+    && curl -fsSL https://get.pulumi.com | sh -s -- --version ${PULUMI_VERSION} \
     # Move pulumi to /usr/local/bin so it's in the PATH for all users
     && mv /root/.pulumi/bin/* /usr/local/bin/ \
     # Install kubectl CLI, see: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
-    # KUBECTL_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
-    # KUBECTL_VERSION will be something like v1.32.2 but commands below require the minor version only
-    && KUBECTL_MINOR_VERSION=v1.35 \
-    && curl -fsSL https://pkgs.k8s.io/core:/stable:/${KUBECTL_MINOR_VERSION}/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg \
+    && curl -fsSL https://pkgs.k8s.io/core:/stable:/v${KUBECTL_MINOR_VERSION}/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg \
     && chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${KUBECTL_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list \
+    && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v${KUBECTL_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list \
     && chmod 644 /etc/apt/sources.list.d/kubernetes.list \
     && apt-get update && apt-get install -y kubectl jq yq \
-    # Add latest Active LTS node.js version
-    # See: https://nodejs.org/en/about/previous-releases and https://nodejs.org/en/download/current
-    && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
-    && apt-get install -y nodejs \
-    # Add Claude Code and OpenAI Codex CLIs
-    && npm install -g @anthropic-ai/claude-code \
-    && npm install -g @openai/codex \
-    && npm install -g @google/gemini-cli \
+    # Install Claude Code (native installer)
+    && curl -fsSL https://claude.ai/install.sh | bash \
+    # Install OpenAI Codex (native binary)
+    && wget https://github.com/openai/codex/releases/download/rust-v${CODEX_VERSION}/codex-x86_64-unknown-linux-gnu.tar.gz -O /tmp/codex.tar.gz \
+    && tar -xzf /tmp/codex.tar.gz -C /tmp \
+    && mv /tmp/codex-x86_64-unknown-linux-gnu /usr/local/bin/codex \
+    && chmod +x /usr/local/bin/codex \
+    && rm /tmp/codex.tar.gz \
     # Grant built-in app user sudo permissions without password prompt
     && echo "app ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
     # Add app user to the docker group to enable docker usage without sudo
