@@ -47,7 +47,7 @@ ARG PULUMI_VERSION=3.217.1
 # renovate: datasource=github-releases depName=kubernetes/kubernetes extractVersion=^v(?<version>\d+\.\d+)
 ARG KUBECTL_MINOR_VERSION=1.35
 # Codex releases: https://github.com/openai/codex/releases
-# renovate: datasource=github-releases depName=openai/codex extractVersion=^v(?<version>.*)$
+# renovate: datasource=github-releases depName=openai/codex extractVersion=^rust-v(?<version>.*)$
 ARG CODEX_VERSION=0.115.0
 
 RUN apt-get update && apt-get install -y \
@@ -105,7 +105,7 @@ RUN apt-get update && apt-get install -y \
     # Install Claude Code (native installer)
     && curl -fsSL https://claude.ai/install.sh | bash \
     # Install OpenAI Codex (native binary)
-    && wget https://github.com/openai/codex/releases/download/v${CODEX_VERSION}/codex-linux -O /usr/local/bin/codex \
+    && wget https://github.com/openai/codex/releases/download/rust-v${CODEX_VERSION}/codex-linux -O /usr/local/bin/codex \
     && chmod +x /usr/local/bin/codex \
     # Grant built-in app user sudo permissions without password prompt
     && echo "app ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
