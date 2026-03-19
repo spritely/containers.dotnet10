@@ -96,7 +96,6 @@ RUN apt-get update && apt-get install -y \
     # Move pulumi to /usr/local/bin so it's in the PATH for all users
     && mv /root/.pulumi/bin/* /usr/local/bin/ \
     # Install kubectl CLI, see: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
-
     && curl -fsSL https://pkgs.k8s.io/core:/stable:/v${KUBECTL_MINOR_VERSION}/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg \
     && chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v${KUBECTL_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list \
