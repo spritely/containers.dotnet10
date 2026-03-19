@@ -19,7 +19,7 @@
 ARG PYTHON_VERSION=3.14
 # .NET SDK tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
 # renovate: datasource=docker depName=mcr.microsoft.com/dotnet/sdk
-ARG DOTNET_VERSION=10.0.102
+ARG DOTNET_VERSION=10.0.201
 
 # Stage with Python installed (official image)
 FROM python:${PYTHON_VERSION}-slim AS py
