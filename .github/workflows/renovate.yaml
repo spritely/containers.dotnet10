@@ -2,7 +2,9 @@
 
 on:
   workflow_dispatch:
-  push:
+  # Daily at midnight Eastern Time (5 AM UTC = midnight EST / 1 AM EDT)
+  schedule:
+    - cron: '0 5 * * *'
 
 jobs:
   renovate:

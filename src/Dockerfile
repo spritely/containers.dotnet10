@@ -104,8 +104,10 @@ RUN apt-get update && apt-get install -y \
     # Install Claude Code (native installer)
     && curl -fsSL https://claude.ai/install.sh | bash \
     # Install OpenAI Codex (native binary)
-    && wget https://github.com/openai/codex/releases/download/rust-v${CODEX_VERSION}/codex-linux -O /usr/local/bin/codex \
+    && wget https://github.com/openai/codex/releases/download/rust-v${CODEX_VERSION}/codex-x86_64-unknown-linux-gnu.tar.gz -O /tmp/codex.tar.gz \
+    && tar -xzf /tmp/codex.tar.gz -C /usr/local/bin codex \
     && chmod +x /usr/local/bin/codex \
+    && rm /tmp/codex.tar.gz \
     # Grant built-in app user sudo permissions without password prompt
     && echo "app ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
     # Add app user to the docker group to enable docker usage without sudo
