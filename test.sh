@@ -20,8 +20,10 @@ echo "Building image..."
 docker build -t "$IMAGE_NAME" ./src
 
 echo "Running tests..."
+mkdir -p test-results
 docker run --rm \
     -v "$(pwd)/tests:/tests:ro" \
+    -v "$(pwd)/test-results:/test-results" \
     -e "EXPECTED_DOTNET_VERSION=$DOTNET_VERSION" \
     -e "EXPECTED_PYTHON_VERSION=$PYTHON_VERSION" \
     -e "EXPECTED_AZURE_CLI_VERSION=$AZURE_CLI_VERSION" \
@@ -30,4 +32,5 @@ docker run --rm \
     -e "EXPECTED_CODEX_VERSION=$CODEX_VERSION" \
     --entrypoint bats \
     "$IMAGE_NAME" \
+    --report-formatter junit --output /test-results \
     /tests/container.bats

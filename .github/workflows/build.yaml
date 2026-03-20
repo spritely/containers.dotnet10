@@ -2,9 +2,9 @@ name: Build and Publish Container
 
 on: [push, workflow_dispatch]
 
-# Permissions required for automatic semantic version tagging
 permissions:
-    contents: write
+    checks: write # Required for test reporting
+    contents: write # Required for pushing tags
 
 jobs:
   build:
@@ -14,15 +14,23 @@ jobs:
     steps:
       - id: version
         name: Get semantic version
-        uses: spritely/actions.semantic-version/get@9030147256b1893f621a45535878d4050b9ad168
+        uses: spritely/actions.semantic-version/get@9030147256b1893f621a45535878d4050b9ad168 # v0.5.7
         with:
-          writeSummary: "true"
+          writeSummary: true
 
       - name: Build and test
         run: ./test.sh
 
+      - name: Generate test report
+        uses: dorny/test-reporter@b082adf0eced0765477756c2a610396589b8c637 # v2.5.0
+        if: always()
+        with:
+          name: Test Results
+          path: test-results/report.xml
+          reporter: java-junit
+
       - name: Build and publish container
-        uses: spritely/actions.publish-container@1b0ac0e1e43063bd9b9068af9c4e5f81c37d58a6
+        uses: spritely/actions.publish-container@1b0ac0e1e43063bd9b9068af9c4e5f81c37d58a6 # v0.1.22
         with:
           registryUsername: ${{ secrets.DOCKER_HUB_USERNAME }}
           registryPassword: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -31,10 +39,10 @@ jobs:
           dockerfile: ./src/Dockerfile
           imageNames: spritelydev/dotnet10-devcontainer
           version: ${{ steps.version.outputs.version }}
-          writeSummary: "true"
+          writeSummary: true
 
       - name: Apply semantic version
         if: ${{ steps.version.outputs.branchName == github.event.repository.default_branch }}
-        uses: spritely/actions.semantic-version/apply@9030147256b1893f621a45535878d4050b9ad168
+        uses: spritely/actions.semantic-version/apply@9030147256b1893f621a45535878d4050b9ad168 # v0.5.7
         with:
           version: ${{ steps.version.outputs.version }}
