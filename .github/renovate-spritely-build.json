@@ -1,18 +1,19 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"],
+  "$schema": "https://docs.renovatebot.com/renovate-global-schema.json",
   "description": "Manual-only config for spritely/build updates (circular dependency)",
   "enabledManagers": ["github-actions"],
-  "packageRules": [
-    {
-      "description": "Only update spritely/build in this manual workflow",
-      "matchPackageNames": ["spritely/build**"],
-      "enabled": true
-    },
-    {
-      "description": "Disable everything else",
-      "matchPackageNames": ["*", "!spritely/build**"],
-      "enabled": false
-    }
-  ]
+  "force": {
+    "packageRules": [
+      {
+        "description": "Only update spritely/build in this manual workflow",
+        "matchPackageNames": ["spritely/build**"],
+        "enabled": true
+      },
+      {
+        "description": "Disable everything else",
+        "matchPackageNames": ["*", "!spritely/build**"],
+        "enabled": false
+      }
+    ]
+  }
 }
