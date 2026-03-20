@@ -1,12 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
-  "description": "Regular automation - excludes spritely actions with circular dependencies",
+  "description": "Automated dependency updates with automerge",
+  "automerge": true,
+  "platformAutomerge": false,
   "packageRules": [
     {
-      "description": "Exclude spritely/actions.semantic-version - use manual workflow instead (circular dependency: it uses our devcontainer image)",
+      "description": "Do not automerge spritely/actions.semantic-version (circular dependency: it uses our devcontainer image)",
       "matchPackageNames": ["spritely/actions.semantic-version"],
-      "enabled": false
+      "automerge": false
     }
   ],
   "customManagers": [
