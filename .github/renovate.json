@@ -5,7 +5,7 @@
   "packageRules": [
     {
       "description": "Exclude spritely/build - use manual workflow instead",
-      "matchPackageNames": ["spritely/build"],
+      "matchPackageNames": ["spritely/build**"],
       "enabled": false
     }
   ],

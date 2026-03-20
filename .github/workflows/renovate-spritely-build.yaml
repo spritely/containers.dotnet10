@@ -1,4 +1,4 @@
-﻿name: Renovate spritely/build
+name: Renovate spritely/build
 
 on:
   # Manual trigger only - for spritely/build updates to avoid circular dependency
@@ -14,6 +14,8 @@ jobs:
         with:
           app-id: ${{ secrets.RENOVATE_APP_ID }}
           private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.repository }}
 
       - name: Checkout
         uses: actions/checkout@v6.0.2

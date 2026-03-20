@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
   "description": "Manual-only config for spritely/build updates (circular dependency)",
@@ -6,13 +6,12 @@
   "packageRules": [
     {
       "description": "Only update spritely/build in this manual workflow",
-      "matchPackageNames": ["spritely/build"],
+      "matchPackageNames": ["spritely/build**"],
       "enabled": true
     },
     {
       "description": "Disable everything else",
-      "matchPackageNames": ["*"],
-      "excludePackageNames": ["spritely/build"],
+      "matchPackageNames": ["*", "!spritely/build**"],
       "enabled": false
     }
   ]
