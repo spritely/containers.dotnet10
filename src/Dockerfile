@@ -48,7 +48,7 @@ ARG PULUMI_VERSION=3.217.1
 ARG KUBECTL_MINOR_VERSION=1.35
 # Codex releases: https://github.com/openai/codex/releases
 # renovate: datasource=github-releases depName=openai/codex extractVersion=^rust-v(?<version>.*)$
-ARG CODEX_VERSION=0.115.0
+ARG CODEX_VERSION=0.116.0
 
 RUN apt-get update && apt-get install -y \
     # Python runtime dependencies (required by copied Python installation)
