@@ -6,12 +6,12 @@
     "packageRules": [
       {
         "description": "Only update spritely/build in this manual workflow",
-        "matchPackageNames": ["spritely/build**"],
+        "matchPackageNames": ["spritely/build"],
         "enabled": true
       },
       {
         "description": "Disable everything else",
-        "matchPackageNames": ["*", "!spritely/build**"],
+        "matchPackageNames": ["*", "!spritely/build"],
         "enabled": false
       }
     ]
