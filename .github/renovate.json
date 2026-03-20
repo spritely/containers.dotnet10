@@ -1,11 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
-  "description": "Regular automation - excludes spritely/build (circular dependency)",
+  "description": "Regular automation - excludes spritely actions with circular dependencies",
   "packageRules": [
     {
-      "description": "Exclude spritely/build - use manual workflow instead",
-      "matchPackageNames": ["spritely/build"],
+      "description": "Exclude spritely/actions.semantic-version - use manual workflow instead (circular dependency: it uses our devcontainer image)",
+      "matchPackageNames": ["spritely/actions.semantic-version"],
       "enabled": false
     }
   ],

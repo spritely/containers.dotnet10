@@ -1,7 +1,7 @@
-name: Renovate spritely/build
+name: Renovate spritely actions
 
 on:
-  # Manual trigger only - for spritely/build updates to avoid circular dependency
+  # Manual trigger only - for spritely action updates to avoid circular dependency
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - name: Renovate
         uses: renovatebot/github-action@v46.1.5
         with:
-          configurationFile: .github/renovate-spritely-build.json
+          configurationFile: .github/renovate-spritely-actions.json
           token: ${{ steps.renovate-token.outputs.token }}
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
