@@ -14,7 +14,7 @@ jobs:
         id: renovate-token
         uses: actions/create-github-app-token@v3.0.0
         with:
-          app-id: ${{ secrets.RENOVATE_CLIENT_ID }}
+          app-id: ${{ secrets.RENOVATE_APP_ID }}
           private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
 
       - name: Checkout
