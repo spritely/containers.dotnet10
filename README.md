@@ -24,14 +24,27 @@ cp .env.example .env
 Do NOT commit the .env file to source control. It is local to your environment. It is listed in .gitignore.
 
 ### Testing
+
+#### Automated tests
+
+`test.sh` builds the Docker image and runs [bats](https://github.com/bats-core/bats-core) tests inside it. Bats is already installed in the image, so no local test tooling is needed — just Docker.
+
+```bash
+./test.sh
+```
+
+The script extracts expected versions from Dockerfile ARGs and verifies that all installed tools match. It also checks developer tools are present and environment configuration is correct.
+
+#### Manual testing with VS Code
+
 Run the prepare-for-test.sh script as follows. Create or modify the test/{container-name}/.devcontainer/.env file as needed. Then open the new folder in Visual Studio Code and reopen the folder inside the devcontainer to validate it.
 
-#### First time only
+##### First time only
 ```bash
 chmod +x prepare-for-test.sh
 ```
 
-#### To Test
+##### To Test
 ```bash
 # prepare-for-test.sh {container-name} {true|false - default is false if not supplied}
 # code test/{container-name}
