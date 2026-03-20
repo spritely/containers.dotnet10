@@ -4,6 +4,7 @@
   "description": "Automated dependency updates with automerge",
   "automerge": true,
   "platformAutomerge": false,
+  "rebaseWhen": "behind-base-branch",
   "packageRules": [
     {
       "description": "Do not automerge spritely/actions.semantic-version (circular dependency: it uses our devcontainer image)",
