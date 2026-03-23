@@ -2,11 +2,11 @@
 set -euo pipefail
 
 IMAGE_NAME="dotnet10-test"
-DOCKERFILE="./src/Dockerfile"
+CONTAINERFILE="./src/Containerfile"
 
-# Extract ARG values from the Dockerfile
+# Extract ARG values from the Containerfile
 extract_arg() {
-    grep -m1 "^ARG ${1}=" "$DOCKERFILE" | cut -d= -f2
+    grep -m1 "^ARG ${1}=" "$CONTAINERFILE" | cut -d= -f2
 }
 
 DOTNET_VERSION=$(extract_arg DOTNET_VERSION)
@@ -14,10 +14,11 @@ PYTHON_VERSION=$(extract_arg PYTHON_VERSION)
 AZURE_CLI_VERSION=$(extract_arg AZURE_CLI_VERSION)
 PULUMI_VERSION=$(extract_arg PULUMI_VERSION)
 KUBECTL_MINOR_VERSION=$(extract_arg KUBECTL_MINOR_VERSION)
+YQ_VERSION=$(extract_arg YQ_VERSION)
 CODEX_VERSION=$(extract_arg CODEX_VERSION)
 
 echo "Building image..."
-docker build -t "$IMAGE_NAME" ./src
+docker build -f "$CONTAINERFILE" -t "$IMAGE_NAME" ./src
 
 echo "Running tests..."
 mkdir -p test-results
@@ -29,6 +30,7 @@ docker run --rm \
     -e "EXPECTED_AZURE_CLI_VERSION=$AZURE_CLI_VERSION" \
     -e "EXPECTED_PULUMI_VERSION=$PULUMI_VERSION" \
     -e "EXPECTED_KUBECTL_MINOR_VERSION=$KUBECTL_MINOR_VERSION" \
+    -e "EXPECTED_YQ_VERSION=$YQ_VERSION" \
     -e "EXPECTED_CODEX_VERSION=$CODEX_VERSION" \
     --entrypoint bats \
     "$IMAGE_NAME" \

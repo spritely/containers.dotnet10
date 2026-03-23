@@ -36,7 +36,7 @@ jobs:
           registryPassword: ${{ secrets.DOCKER_HUB_TOKEN }}
           registryHost: docker.io
           context: ./src
-          dockerfile: ./src/Dockerfile
+          dockerfile: ./src/Containerfile
           imageNames: spritelydev/dotnet10-devcontainer
           version: ${{ steps.version.outputs.version }}
           writeSummary: true

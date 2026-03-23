@@ -46,6 +46,9 @@ ARG PULUMI_VERSION=3.227.0
 # kubectl releases: https://kubernetes.io/releases/
 # renovate: datasource=github-releases depName=kubernetes/kubernetes extractVersion=^v(?<version>\d+\.\d+)
 ARG KUBECTL_MINOR_VERSION=1.35
+# yq releases: https://github.com/mikefarah/yq/releases
+# renovate: datasource=github-releases depName=mikefarah/yq extractVersion=^v(?<version>.*)$
+ARG YQ_VERSION=4.52.4
 # Codex releases: https://github.com/openai/codex/releases
 # renovate: datasource=github-releases depName=openai/codex extractVersion=^rust-v(?<version>.*)$
 ARG CODEX_VERSION=0.116.0
@@ -100,7 +103,10 @@ RUN apt-get update && apt-get install -y \
     && chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v${KUBECTL_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list \
     && chmod 644 /etc/apt/sources.list.d/kubernetes.list \
-    && apt-get update && apt-get install -y kubectl jq yq \
+    && apt-get update && apt-get install -y kubectl jq \
+    # Install yq (mikefarah/yq - Go-based YAML processor)
+    && curl -fsSL "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq \
+    && chmod +x /usr/local/bin/yq \
     # Install Claude Code (native installer)
     && curl -fsSL https://claude.ai/install.sh | bash \
     # Install OpenAI Codex (native binary)

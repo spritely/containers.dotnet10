@@ -15,10 +15,9 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update ARG versions in Dockerfile with renovate comments",
+      "description": "Update ARG versions in Containerfile/Dockerfile with renovate comments",
       "managerFilePatterns": [
-        "/(^|/)Dockerfile$/",
-        "/(^|/)Dockerfile\\.[^/]*$/"
+        "/(^|/)Containerfile$/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-z-]+?) depName=(?<depName>[^\\s]+?)(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?\\s+ARG [A-Z_]+?=(?<currentValue>.+?)\\s"

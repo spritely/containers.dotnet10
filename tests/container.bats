@@ -1,38 +1,44 @@
 #!/usr/bin/env bats
 
-# Core runtimes (version-pinned)
+# Version checks for tools with pinned versions in Containerfile
 
-@test "dotnet version matches Dockerfile" {
+@test "dotnet version matches Containerfile" {
     run dotnet --version
     [ "$status" -eq 0 ]
     [[ "$output" == "${EXPECTED_DOTNET_VERSION}"* ]]
 }
 
-@test "python3 version matches Dockerfile" {
+@test "python3 version matches Containerfile" {
     run python3 --version
     [ "$status" -eq 0 ]
     [[ "$output" == *"${EXPECTED_PYTHON_VERSION}"* ]]
 }
 
-@test "azure cli version matches Dockerfile" {
+@test "azure cli version matches Containerfile" {
     run az version -o tsv
     [ "$status" -eq 0 ]
     [[ "$output" == *"${EXPECTED_AZURE_CLI_VERSION}"* ]]
 }
 
-@test "pulumi version matches Dockerfile" {
+@test "pulumi version matches Containerfile" {
     run pulumi version
     [ "$status" -eq 0 ]
     [[ "$output" == *"${EXPECTED_PULUMI_VERSION}"* ]]
 }
 
-@test "kubectl version matches Dockerfile" {
+@test "kubectl version matches Containerfile" {
     run kubectl version --client
     [ "$status" -eq 0 ]
     [[ "$output" == *"${EXPECTED_KUBECTL_MINOR_VERSION}"* ]]
 }
 
-@test "codex version matches Dockerfile" {
+@test "yq version matches Containerfile" {
+    run yq --version
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"${EXPECTED_YQ_VERSION}"* ]]
+}
+
+@test "codex version matches Containerfile" {
     run codex --version
     [ "$status" -eq 0 ]
     [[ "$output" == *"${EXPECTED_CODEX_VERSION}"* ]]
@@ -55,7 +61,7 @@
     [ "$status" -eq 0 ]
 }
 
-@test "ssh is installed" {
+@test "ssh client is installed" {
     run ssh -V
     [ "$status" -eq 0 ]
 }
@@ -75,12 +81,7 @@
     [ "$status" -eq 0 ]
 }
 
-@test "yq is installed" {
-    run yq --version
-    [ "$status" -eq 0 ]
-}
-
-@test "bat is installed" {
+@test "bat is installed and symlinked from batcat" {
     run bat --version
     [ "$status" -eq 0 ]
 }
@@ -126,12 +127,14 @@
     [ "$PULUMI_SKIP_UPDATE_CHECK" = "true" ]
 }
 
-@test "oh-my-zsh is installed" {
-    [ -d /root/.oh-my-zsh ]
+# Shell environment
+
+@test "zsh is the default shell" {
+    run getent passwd root
+    [ "$status" -eq 0 ]
+    [[ "$output" == */bin/zsh ]]
 }
 
-@test "default shell for root is zsh" {
-    run grep "^root:" /etc/passwd
-    [ "$status" -eq 0 ]
-    [[ "$output" == */zsh ]]
+@test "oh-my-zsh is installed" {
+    [ -d "$HOME/.oh-my-zsh" ]
 }
