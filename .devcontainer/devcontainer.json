@@ -1,0 +1,31 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
+{
+    "name": "containers.dotnet10",
+
+    "dockerComposeFile": "container-compose.yaml",
+    "service": "containers-dotnet10-dev",
+    "workspaceFolder": "/src",
+    "initializeCommand": "(mkdir .devcontainer 2>/dev/null; touch .devcontainer/.env 2>/dev/null) || (mkdir .devcontainer 2> nul & type nul >> .devcontainer/.env 2> nul)",
+
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "anthropic.claude-code",
+                "bierner.github-markdown-preview",
+                "davidanson.vscode-markdownlint",
+                "editorconfig.editorconfig",
+                "mhutchie.git-graph",
+                "ms-dotnettools.csdevkit",
+                "ms-python.python",
+                "openai.chatgpt",
+                "ryanluker.vscode-coverage-gutters",
+                "streetsidesoftware.code-spell-checker",
+                "yzhang.markdown-all-in-one"
+            ]
+        }
+    }
+}

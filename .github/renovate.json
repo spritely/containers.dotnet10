@@ -4,18 +4,12 @@
   "description": "Automated dependency updates with automerge",
   "automerge": true,
   "platformAutomerge": false,
+  "prHourlyLimit": 0,
   "rebaseWhen": "behind-base-branch",
-  "packageRules": [
-    {
-      "description": "Do not automerge spritely/actions.semantic-version (circular dependency: it uses our devcontainer image)",
-      "matchPackageNames": ["spritely/actions.semantic-version"],
-      "automerge": false
-    }
-  ],
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update ARG versions in Containerfile/Dockerfile with renovate comments",
+      "description": "Update ARG versions in Containerfile with renovate comments",
       "managerFilePatterns": [
         "/(^|/)Containerfile$/"
       ],

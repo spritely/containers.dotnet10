@@ -1,4 +1,4 @@
-﻿# 1. List of all available tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
+# 1. List of all available tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
 # 2. Details about selecting a container image: https://github.com/dotnet/dotnet-docker/blob/main/README.sdk.md
 # 3. Ubuntu releases: https://www.releases.ubuntu.com/
 # 4. Information on dotnet versions: https://dotnet.microsoft.com/en-us/download/dotnet
@@ -16,7 +16,7 @@
 # Base image versions
 # Python tags: https://hub.docker.com/_/python
 # renovate: datasource=docker depName=python
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=3.14.3
 # .NET SDK tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
 # renovate: datasource=docker depName=mcr.microsoft.com/dotnet/sdk
 ARG DOTNET_VERSION=10.0.201
