@@ -46,43 +46,32 @@ ARG PULUMI_VERSION=3.227.0
 # kubectl releases: https://kubernetes.io/releases/
 # renovate: datasource=github-releases depName=kubernetes/kubernetes extractVersion=^v(?<version>\d+\.\d+)
 ARG KUBECTL_MINOR_VERSION=1.35
-# yq releases: https://github.com/mikefarah/yq/releases
-# renovate: datasource=github-releases depName=mikefarah/yq extractVersion=^v(?<version>.*)$
-ARG YQ_VERSION=4.52.4
-# Codex releases: https://github.com/openai/codex/releases
-# renovate: datasource=github-releases depName=openai/codex extractVersion=^rust-v(?<version>.*)$
-ARG CODEX_VERSION=0.116.0
 
+# Shared devtools from containers.base (install-devtools.sh, apply-templates, merge-xml)
+# renovate: datasource=github-tags depName=spritely/containers.base extractVersion=^v(?<version>.*)$
+ARG CONTAINERS_BASE_VERSION=0.1.1
+
+# Shared devtools and scripts from containers.base
+# Bootstrap curl (may not be in base image), then fetch and run install-devtools.sh
+# which installs curl, wget, jq, git, bat, bats, tree, zsh, yq, claude, codex, uv, copier, etc.
+RUN apt-get update && apt-get install -y curl \
+    && BASE_URL="https://raw.githubusercontent.com/spritely/containers.base/v${CONTAINERS_BASE_VERSION}/src" \
+    && curl -fsSL "${BASE_URL}/install-devtools.sh" -o /tmp/install-devtools.sh \
+    && bash /tmp/install-devtools.sh \
+    && curl -fsSL "${BASE_URL}/apply-templates" -o /usr/local/bin/apply-templates \
+    && chmod +x /usr/local/bin/apply-templates \
+    && curl -fsSL "${BASE_URL}/merge-xml" -o /usr/local/bin/merge-xml \
+    && chmod +x /usr/local/bin/merge-xml
+
+# Project-specific tools
 RUN apt-get update && apt-get install -y \
-    # Python runtime dependencies (required by copied Python installation)
-    libssl3 \
-    zlib1g \
-    libbz2-1.0 \
-    libreadline8 \
-    libsqlite3-0 \
-    libncursesw6 \
-    libffi8 \
-    liblzma5 \
-    tk \
-    # Build dependencies (required for package installations below)
     apt-transport-https \
     ca-certificates \
-    curl \
     gnupg \
     lsb-release \
-    wget \
+    sudo \
     # Docker-in-Docker support
     fuse-overlayfs \
-    # Developer experience tools
-    bat \
-    bats \
-    git \
-    openssh-client \
-    sudo \
-    tree \
-    zsh \
-    # Make bat (installed as batcat) available as bat, see: https://github.com/sharkdp/bat
-    && ln -s /usr/bin/batcat /usr/local/bin/bat \
     # Enable docker in docker
     && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker-archive-keyring.gpg \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
@@ -103,32 +92,13 @@ RUN apt-get update && apt-get install -y \
     && chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v${KUBECTL_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list \
     && chmod 644 /etc/apt/sources.list.d/kubernetes.list \
-    && apt-get update && apt-get install -y kubectl jq \
-    # Install yq (mikefarah/yq - Go-based YAML processor)
-    && curl -fsSL "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq \
-    && chmod +x /usr/local/bin/yq \
-    # Install Claude Code (native installer)
-    && curl -fsSL https://claude.ai/install.sh | bash \
-    # Install OpenAI Codex (native binary)
-    && wget https://github.com/openai/codex/releases/download/rust-v${CODEX_VERSION}/codex-x86_64-unknown-linux-gnu.tar.gz -O /tmp/codex.tar.gz \
-    && tar -xzf /tmp/codex.tar.gz -C /tmp \
-    && mv /tmp/codex-x86_64-unknown-linux-gnu /usr/local/bin/codex \
-    && chmod +x /usr/local/bin/codex \
-    && rm /tmp/codex.tar.gz \
+    && apt-get update && apt-get install -y kubectl \
     # Grant built-in app user sudo permissions without password prompt
     && echo "app ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
     # Add app user to the docker group to enable docker usage without sudo
     && usermod -aG docker app \
-    # Install oh-my-zsh. Needs to be per user. See: https://ohmyz.sh/
-    && sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)" --unattended \
-    # Set zsh as the default shell for the main (root) user
-    && chsh -s /bin/zsh root \
-    # Install uv (fast Python package installer)
-    # See: https://github.com/astral-sh/uv
-    && curl -LsSf https://astral.sh/uv/install.sh | sh \
     # Clean up
     && apt-get clean \
-    && rm -rf /tmp/* \
     && rm -rf /var/lib/apt/lists/*
 
 # Add uv to PATH

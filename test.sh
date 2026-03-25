@@ -14,8 +14,6 @@ PYTHON_VERSION=$(extract_arg PYTHON_VERSION)
 AZURE_CLI_VERSION=$(extract_arg AZURE_CLI_VERSION)
 PULUMI_VERSION=$(extract_arg PULUMI_VERSION)
 KUBECTL_MINOR_VERSION=$(extract_arg KUBECTL_MINOR_VERSION)
-YQ_VERSION=$(extract_arg YQ_VERSION)
-CODEX_VERSION=$(extract_arg CODEX_VERSION)
 
 echo "Building image..."
 docker build -f "$CONTAINERFILE" -t "$IMAGE_NAME" ./src
@@ -30,8 +28,6 @@ docker run --rm \
     -e "EXPECTED_AZURE_CLI_VERSION=$AZURE_CLI_VERSION" \
     -e "EXPECTED_PULUMI_VERSION=$PULUMI_VERSION" \
     -e "EXPECTED_KUBECTL_MINOR_VERSION=$KUBECTL_MINOR_VERSION" \
-    -e "EXPECTED_YQ_VERSION=$YQ_VERSION" \
-    -e "EXPECTED_CODEX_VERSION=$CODEX_VERSION" \
     --entrypoint bats \
     "$IMAGE_NAME" \
     --report-formatter junit --output /test-results \
