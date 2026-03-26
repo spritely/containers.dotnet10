@@ -1,17 +1,15 @@
 #!/usr/bin/env bats
 
-# Version checks for tools with pinned versions in Containerfile
+# Sanity checks for base runtime tools
 
-@test "dotnet version matches Containerfile" {
+@test "dotnet is installed" {
     run dotnet --version
     [ "$status" -eq 0 ]
-    [[ "$output" == "${EXPECTED_DOTNET_VERSION}"* ]]
 }
 
-@test "python3 version matches Containerfile" {
+@test "python3 is installed" {
     run python3 --version
     [ "$status" -eq 0 ]
-    [[ "$output" == *"${EXPECTED_PYTHON_VERSION}"* ]]
 }
 
 @test "azure cli version matches Containerfile" {

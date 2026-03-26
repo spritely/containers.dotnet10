@@ -17,6 +17,7 @@
 # Python tags: https://hub.docker.com/_/python
 FROM python:3.14.3-slim AS py
 
+# .NET SDK tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
 FROM mcr.microsoft.com/dotnet/sdk:10.0.201-noble-amd64
 
 # Clear this environment variable so xml docs from NuGet packages are unpackaged. The default dotnet/sdk image sets it to 'skip'.
