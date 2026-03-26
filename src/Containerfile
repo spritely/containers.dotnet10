@@ -13,18 +13,11 @@
 # - Choose latest long-term-support (LTS) version of Ubuntu from #3
 # - Select the latest dotnet version from #4 that exists in #1
 
-# Base image versions
-# Python tags: https://hub.docker.com/_/python
-# renovate: datasource=docker depName=python
-ARG PYTHON_VERSION=3.14.3
-# .NET SDK tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
-# renovate: datasource=docker depName=mcr.microsoft.com/dotnet/sdk
-ARG DOTNET_VERSION=10.0.201
-
 # Stage with Python installed (official image)
-FROM python:${PYTHON_VERSION}-slim AS py
+# Python tags: https://hub.docker.com/_/python
+FROM python:3.14.3-slim AS py
 
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION}-noble-amd64
+FROM mcr.microsoft.com/dotnet/sdk:10.0.201-noble-amd64
 
 # Clear this environment variable so xml docs from NuGet packages are unpackaged. The default dotnet/sdk image sets it to 'skip'.
 # See https://github.com/dotnet/dotnet-docker/issues/2790
