@@ -43,7 +43,7 @@ ARG KUBECTL_MINOR_VERSION=1.35
 
 # Shared devtools from containers.base (install-devtools.sh, apply-templates, merge-xml)
 # renovate: datasource=github-tags depName=spritely/containers.base extractVersion=^v(?<version>.*)$
-ARG CONTAINERS_BASE_VERSION=0.1.1
+ARG CONTAINERS_BASE_VERSION=0.1.9
 
 # Shared devtools and scripts from containers.base
 # Bootstrap curl (may not be in base image), then fetch and run install-devtools.sh
