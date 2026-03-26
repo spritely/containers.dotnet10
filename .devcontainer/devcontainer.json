@@ -18,6 +18,7 @@
                 "bierner.github-markdown-preview",
                 "davidanson.vscode-markdownlint",
                 "editorconfig.editorconfig",
+                "humao.rest-client",
                 "mhutchie.git-graph",
                 "ms-dotnettools.csdevkit",
                 "ms-python.python",
