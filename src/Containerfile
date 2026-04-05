@@ -18,7 +18,7 @@
 FROM python:3.14.3-slim@sha256:fb83750094b46fd6b8adaa80f66e2302ecbe45d513f6cece637a841e1025b4ca AS py
 
 # .NET SDK tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
-FROM mcr.microsoft.com/dotnet/sdk:10.0.201-noble-amd64@sha256:641ab8d0a499b924d685c6c5af45e6ecb2b42af6290fa399c8f858d3c1823829
+FROM mcr.microsoft.com/dotnet/sdk:10.0.201-noble-amd64@sha256:c49c11ec696d3181831c5c83636d3ccc173a9a0f1959d963b7aa7c5509bd58b1
 
 # Clear this environment variable so xml docs from NuGet packages are unpackaged. The default dotnet/sdk image sets it to 'skip'.
 # See https://github.com/dotnet/dotnet-docker/issues/2790
