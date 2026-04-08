@@ -31,7 +31,7 @@ COPY --from=py /usr/local/ /usr/local/
 # Obtain the version number from: https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli
 # Only use the major, minor, and patch version numbers
 # renovate: datasource=github-tags depName=Azure/azure-cli extractVersion=^azure-cli-(?<version>.*)$
-ARG AZURE_CLI_VERSION=2.84.0
+ARG AZURE_CLI_VERSION=2.85.0
 # Pulumi releases: https://www.pulumi.com/docs/install/versions/
 # renovate: datasource=github-releases depName=pulumi/pulumi extractVersion=^v(?<version>.*)$
 ARG PULUMI_VERSION=3.229.0
