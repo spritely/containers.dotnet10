@@ -38,7 +38,7 @@ jobs:
           reporter: java-junit
 
       - name: Build and publish container
-        uses: spritely/actions.publish-container@ed34b9b3778ecd43c8667c15d96cb30c3293b196 # v0.2.10
+        uses: spritely/actions.publish-container@d95604174ff817d086cb3c22cef8c82661a73bb1 # v0.2.15
         with:
           registryUsername: ${{ secrets.DOCKER_HUB_USERNAME }}
           registryPassword: ${{ secrets.DOCKER_HUB_TOKEN }}
