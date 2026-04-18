@@ -34,7 +34,7 @@ COPY --from=py /usr/local/ /usr/local/
 ARG AZURE_CLI_VERSION=2.85.0
 # Pulumi releases: https://www.pulumi.com/docs/install/versions/
 # renovate: datasource=github-releases depName=pulumi/pulumi extractVersion=^v(?<version>.*)$
-ARG PULUMI_VERSION=3.229.0
+ARG PULUMI_VERSION=3.231.0
 # Obtain the version number from: https://dl.k8s.io/release/stable.txt
 # Version will be something like v1.32.2 but commands below require using the major and minor version only
 # kubectl releases: https://kubernetes.io/releases/
