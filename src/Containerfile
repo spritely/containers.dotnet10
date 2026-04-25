@@ -39,7 +39,7 @@ ARG PULUMI_VERSION=3.231.0
 # Version will be something like v1.32.2 but commands below require using the major and minor version only
 # kubectl releases: https://kubernetes.io/releases/
 # renovate: datasource=github-releases depName=kubernetes/kubernetes extractVersion=^v(?<version>\d+\.\d+)
-ARG KUBECTL_MINOR_VERSION=1.35
+ARG KUBECTL_MINOR_VERSION=1.36
 
 # Shared devtools from containers.base (install-devtools.sh, apply-templates, merge-xml)
 # renovate: datasource=github-tags depName=spritely/containers.base extractVersion=^v(?<version>.*)$
