@@ -11,6 +11,14 @@
       "matchPackageNames": ["mcr.microsoft.com/dotnet/sdk"],
       "matchUpdateTypes": ["major"],
       "enabled": false
+    },
+    {
+      "matchPackageNames": [
+        "spritely/containers.base",
+        "spritely/actions.semantic-version",
+        "spritely/actions.publish-container"
+      ],
+      "groupName": "spritely infrastructure"
     }
   ],
   "customManagers": [
