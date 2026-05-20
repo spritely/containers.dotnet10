@@ -15,7 +15,7 @@
 
 # Stage with Python installed (official image)
 # Python tags: https://hub.docker.com/_/python
-FROM python:3.14.5-slim@sha256:7a500125bc50693f2214e842a621440a1b1b9cbb2188f74ab045d29ed2ea5856 AS py
+FROM python:3.14.5-slim@sha256:a24bfbc0bd39cfa24de47147ada92b65916ad693e6ab5034636ef21f5663ef13 AS py
 
 # .NET SDK tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
 FROM mcr.microsoft.com/dotnet/sdk:10.0.300-noble-amd64@sha256:95ce19ccaea2d89766ac07f30c8214b2cafd97c5212418937833421742b57acf
