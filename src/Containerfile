@@ -13,19 +13,12 @@
 # - Choose latest long-term-support (LTS) version of Ubuntu from #3
 # - Select the latest dotnet version from #4 that exists in #1
 
-# Stage with Python installed (official image)
-# Python tags: https://hub.docker.com/_/python
-FROM python:3.14.6-slim@sha256:b877e50bd90de10af8d82c57a022fc2e0dc731c5320d762a27986facfc3355c1 AS py
-
 # .NET SDK tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
-FROM mcr.microsoft.com/dotnet/sdk:10.0.301-noble-amd64@sha256:493fca072aac81307027cbb7b7c9a82b6e87d222af315504d05dc6530e69b519
+FROM mcr.microsoft.com/dotnet/sdk:10.0.301-resolute-amd64@sha256:4265886564819acf37ee3510889c0f4600ac13eec1d70edb81ea471e44d435f0
 
 # Clear this environment variable so xml docs from NuGet packages are unpackaged. The default dotnet/sdk image sets it to 'skip'.
 # See https://github.com/dotnet/dotnet-docker/issues/2790
 ENV NUGET_XMLDOC_MODE=
-
-# Copy Python runtime + stdlib from official Python image
-COPY --from=py /usr/local/ /usr/local/
 
 # Tool versions
 # Obtain the version number from: https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli
@@ -43,7 +36,7 @@ ARG KUBECTL_MINOR_VERSION=1.36
 
 # Shared devtools from containers.base (install-devtools.sh, apply-templates, merge-xml)
 # renovate: datasource=github-tags depName=spritely/containers.base extractVersion=^v(?<version>.*)$
-ARG CONTAINERS_BASE_VERSION=0.2.89
+ARG CONTAINERS_BASE_VERSION=0.3.2
 
 # Shared devtools and scripts from containers.base
 # Bootstrap curl (may not be in base image), then fetch and run install-devtools.sh
@@ -73,7 +66,10 @@ RUN apt-get update && apt-get install -y \
     # Install Azure CLI, see: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
     && curl -sLS https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/keyrings/microsoft.gpg > /dev/null \
     && chmod go+r /etc/apt/keyrings/microsoft.gpg \
-    && AZ_DIST=$(lsb_release -cs) \
+    # Azure CLI has no resolute suite yet (Azure/azure-cli#33282); pin to noble.
+    # Revisit when packages.microsoft.com publishes resolute.
+    #&& AZ_DIST=$(lsb_release -cs) \
+    && AZ_DIST=noble \
     && AZ_VER=${AZURE_CLI_VERSION} \
     && echo "Types: deb\nURIs: https://packages.microsoft.com/repos/azure-cli/\nSuites: ${AZ_DIST}\nComponents: main\nArchitectures: $(dpkg --print-architecture)\nSigned-by: /etc/apt/keyrings/microsoft.gpg" | tee /etc/apt/sources.list.d/azure-cli.sources \
     && apt-get update && apt-get install -y azure-cli=${AZ_VER}-1~${AZ_DIST} \
@@ -94,9 +90,6 @@ RUN apt-get update && apt-get install -y \
     # Clean up
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-# Add uv to PATH
-ENV PATH="/root/.local/bin:${PATH}"
 
 ENV PULUMI_SKIP_UPDATE_CHECK=true
 
