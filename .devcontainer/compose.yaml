@@ -1,12 +1,21 @@
+name: containers-dotnet10
+
 services:
-  containers-dotnet10-dev:
-    container_name: containers-dotnet10-dev
+  dev:
     build:
       context: ../src
       dockerfile: Containerfile
     command: /bin/sh -c "sleep infinity"
     volumes:
       - ../:/src
-      - ${HOME:-$USERPROFILE}/.ssh:/root/.ssh:ro
+      # Codex doesn't have environment variables to do this without an
+      # enterprise subscription so map in common auth folder instead
+      - ${HOME:-$USERPROFILE}/.codex:/root/.codex
     env_file:
       - .env
+    # Environment variables have higher precedence than the .env file
+    # Bare name variables only pass through if set on the host
+    environment:
+      - ANTHROPIC_API_KEY
+      - CLAUDE_CODE_OAUTH_TOKEN
+      - GITHUB_TOKEN
