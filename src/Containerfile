@@ -36,7 +36,12 @@ ARG KUBECTL_MINOR_VERSION=1.36
 
 # Shared devtools from containers.base (install-devtools.sh, apply-templates, merge-xml)
 # renovate: datasource=github-tags depName=spritely/containers.base extractVersion=^v(?<version>.*)$
-ARG CONTAINERS_BASE_VERSION=0.6.0
+ARG CONTAINERS_BASE_VERSION=0.8.2
+
+# Rename the image's built-in 'ubuntu' user to 'dev' (still 1000:1000) so the
+# account name matches all our other devcontainers.
+RUN groupmod --new-name dev ubuntu \
+    && usermod --login dev --home /home/dev --move-home ubuntu
 
 # Shared devtools and scripts from containers.base
 # Bootstrap curl (may not be in base image), then fetch and run install-devtools.sh
@@ -85,10 +90,10 @@ RUN apt-get update && apt-get install -y \
     && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v${KUBECTL_MINOR_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list \
     && chmod 644 /etc/apt/sources.list.d/kubernetes.list \
     && apt-get update && apt-get install -y kubectl \
-    # Grant built-in app user sudo permissions without password prompt
-    && echo "app ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
-    # Add app user to the docker group to enable docker usage without sudo
-    && usermod -aG docker app \
+    # Grant dev user sudo permissions without password prompt
+    && echo "dev ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
+    # Add dev user to the docker group to enable docker usage without sudo
+    && usermod -aG docker dev \
     && dotnet tool install -g csharpier \
     # Clean up
     && apt-get clean \
@@ -98,3 +103,4 @@ ENV PULUMI_SKIP_UPDATE_CHECK=true
 
 # Start docker in docker
 ENTRYPOINT ["sh", "-c", "dockerd > /dev/null 2>&1 & exec \"$@\"", "--"]
+CMD ["sleep", "infinity"]
