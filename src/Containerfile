@@ -70,6 +70,8 @@ RUN apt-get update && apt-get install -y \
     && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker-archive-keyring.gpg \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
     && apt-get update && apt-get install -y docker-ce \
+    && mkdir -p /etc/docker \
+    && echo '{"features":{"containerd-snapshotter":false}}' > /etc/docker/daemon.json
     # Install Azure CLI, see: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
     && curl -sLS https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/keyrings/microsoft.gpg > /dev/null \
     && chmod go+r /etc/apt/keyrings/microsoft.gpg \
@@ -102,5 +104,5 @@ RUN apt-get update && apt-get install -y \
 ENV PULUMI_SKIP_UPDATE_CHECK=true
 
 # Start docker in docker
-ENTRYPOINT ["sh", "-c", "dockerd > /dev/null 2>&1 & exec \"$@\"", "--"]
+ENTRYPOINT ["sh", "-c", "sudo dockerd -G $(id -g) > /tmp/dockerd.log 2>&1 & exec \"$@\"", "--"]
 CMD ["sleep", "infinity"]
