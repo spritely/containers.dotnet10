@@ -14,7 +14,7 @@
 # - Select the latest dotnet version from #4 that exists in #1
 
 # .NET SDK tags: https://mcr.microsoft.com/product/dotnet/sdk/tags
-FROM mcr.microsoft.com/dotnet/sdk:10.0.301-resolute-amd64@sha256:4265886564819acf37ee3510889c0f4600ac13eec1d70edb81ea471e44d435f0
+FROM mcr.microsoft.com/dotnet/sdk:10.0.302-resolute-amd64@sha256:303563b156b9cccfb5f5316d18088d40e9073ab7fb47de76349c077eefdedbcf
 
 # Clear this environment variable so xml docs from NuGet packages are unpackaged. The default dotnet/sdk image sets it to 'skip'.
 # See https://github.com/dotnet/dotnet-docker/issues/2790
