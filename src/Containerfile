@@ -71,7 +71,7 @@ RUN apt-get update && apt-get install -y \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
     && apt-get update && apt-get install -y docker-ce \
     && mkdir -p /etc/docker \
-    && echo '{"features":{"containerd-snapshotter":false}}' > /etc/docker/daemon.json
+    && echo '{"features":{"containerd-snapshotter":false}}' > /etc/docker/daemon.json \
     # Install Azure CLI, see: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
     && curl -sLS https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/keyrings/microsoft.gpg > /dev/null \
     && chmod go+r /etc/apt/keyrings/microsoft.gpg \
