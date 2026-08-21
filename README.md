@@ -1,5 +1,7 @@
 # containers.dotnet10
 
+This repo is now only passively maintained with automation. Upgrade to containers.core.
+
 Creates a dotnet 10 devcontainer with various tools preinstalled like pulumi and kubectl, and AI tools like claude code, and codex.
 
 Published container is available from: https://hub.docker.com/repository/docker/spritelydev/dotnet10-devcontainer
