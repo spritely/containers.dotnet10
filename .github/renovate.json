@@ -24,6 +24,10 @@
         "spritely/actions.publish-container"
       ],
       "groupName": "spritely infrastructure"
+    },
+    {
+      "matchPackageNames": ["spritely/containers.base"],
+      "allowedVersions": "<0.9.0"
     }
   ],
   "customManagers": [
