@@ -18,6 +18,11 @@
       "enabled": false
     },
     {
+      "description": "MCR publishes no release timestamps. Proceed when no timestamp exists; the 14-day wait applies automatically once timestamps are available.",
+      "matchPackageNames": ["mcr.microsoft.com/dotnet/sdk"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    },
+    {
       "matchPackageNames": [
         "spritely/actions.publish-container",
         "spritely/actions.publish-nuget",
